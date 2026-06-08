@@ -4,17 +4,17 @@ package main
 import (
 	"log"
 	"net"
-	"os"
 
 	"google.golang.org/grpc"
 
 	"privacyfilter/filter"
+	"privacyfilter/internal/env"
 	"privacyfilter/internal/grpcapi"
 )
 
 func main() {
-	tomlPath := envOr("PF_GITLEAKS_TOML", "rules/gitleaks.toml")
-	addr := ":" + envOr("PF_GRPC_PORT", "8089")
+	tomlPath := env.String("PF_GITLEAKS_TOML", "rules/gitleaks.toml")
+	addr := ":" + env.String("PF_GRPC_PORT", "8089")
 
 	f, err := filter.New(tomlPath)
 	if err != nil {
@@ -35,9 +35,3 @@ func main() {
 	log.Fatal(s.Serve(lis))
 }
 
-func envOr(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return def
-}

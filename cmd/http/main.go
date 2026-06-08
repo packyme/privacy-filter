@@ -4,15 +4,15 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"privacyfilter/filter"
+	"privacyfilter/internal/env"
 	"privacyfilter/internal/httpapi"
 )
 
 func main() {
-	tomlPath := envOr("PF_GITLEAKS_TOML", "rules/gitleaks.toml")
-	addr := ":" + envOr("PF_PORT", "8088")
+	tomlPath := env.String("PF_GITLEAKS_TOML", "rules/gitleaks.toml")
+	addr := ":" + env.String("PF_PORT", "8088")
 
 	f, err := filter.New(tomlPath)
 	if err != nil {
@@ -26,9 +26,3 @@ func main() {
 	log.Fatal(http.ListenAndServe(addr, httpapi.Handler(f)))
 }
 
-func envOr(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return def
-}
