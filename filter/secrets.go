@@ -316,6 +316,10 @@ func hasStrongSecretContext(text string, start, end int) bool {
 	if last[0] >= candStartInRegion {
 		return true
 	}
+	// 关键词跨过候选起点（如 "api key" 的 "key" 落进候选串里）→ 已经紧贴，视为强
+	if last[1] > candStartInRegion {
+		return true
+	}
 	// 关键词在 lookback 里：检查关键词结束 → 候选起点 之间是否只剩赋值字符
 	between := region[last[1]:candStartInRegion]
 	for i := 0; i < len(between); i++ {
