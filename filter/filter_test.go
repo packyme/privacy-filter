@@ -201,6 +201,15 @@ func TestStrongContextNotTriggeredByPathKeyword(t *testing.T) {
 	}
 }
 
+// 关键词跨过候选串起点（"api key" 里的 "key" 落进候选串）不应 panic，且应判定为强上下文。
+func TestStrongContextKeywordStraddlingCandidateStart(t *testing.T) {
+	f := newFilter(t)
+	in := "use api key9F3jL8mQ2xR7tK4vN6pW1sZ0dC5 to authenticate"
+	if got := redact(t, f, in); !strings.Contains(got, "[密钥]") {
+		t.Errorf("跨界的 api key 未脱敏: %q", got)
+	}
+}
+
 // --- Post Validators ---
 
 // 模板变量不脱
